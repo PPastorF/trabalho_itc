@@ -1,0 +1,31 @@
+3
+2 a b
+1
+1 2
+6
+0 a 1
+0 b 1
+1 a 1
+1 b 2
+2 a 0
+2 b 2
+10
+abbbba
+aabbbb
+bbabbabbabbb
+bbbbbbbbbbb
+-
+abababababab
+bbbbaabbbb
+abba
+a
+aaa
+
+1.rejeita 2. aceita 3. aceita 4. aceita 5. rejeita 6. rejeita 7. aceita 8. rejeita 9. rejeita 10. rejeita
+
+[-1, 1, 1, 1, -1, -1, 1, -1, -1, -1]
+
+[-1, 1, 1, 1, -1, 1, -1, -1, -1]
+
+meu
+[-1, 1, 1, 1, -1, 1, -1, -1, -1]
