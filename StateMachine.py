@@ -1,5 +1,6 @@
 class Transicao(object):
-    """Transicao so guarda de onde veio, qual o simbolo transacionado e o destino"""
+    """Transicao so guarda de onde veio, qual o simbolo transacionado e o destino
+        no fim nao precisei disso"""
 
     def __init__(self,anterior,trans,proximo):
         self.anterior = anterior
@@ -10,7 +11,7 @@ class Transicao(object):
         print('[',self.anterior,self.trans,self.proximo,']',sep=' ',end=' ')
 
 class StateMachine(object):
-    """docstring for StateMachine."""
+    """StateMachine. Deve calcular AFD e AFN """
     def __init__(self):
         print("Numero de estados:"); self.nq = int(input())
         print("n terminais e conjunto terminais"); temp = input().split()
@@ -18,15 +19,18 @@ class StateMachine(object):
         self.alfabeto = temp[1:]
         self.qInciais = [str(i) for i in range(int(input()))]
         temp = input().split()
-            # Estados serao pesquisados por dict entao pode ser string
+        
+        # Estados serao pesquisados por dict entao pode ser string
         self.nAceitacao = temp[0]
         self.aceitacao = temp[1:]
         self.nTransicoes = int(input())
         self.transicoes = {}
+
         for i in range(self.nTransicoes):
-            anterior,trans,proximo = input().split()
+            anterior, trans, proximo = input().split()
+        
             if anterior+trans in self.transicoes.keys():
-                self.trans[anterior+trans].append(Transicao(anterior,trans,proximo))
+                self.transicoes[anterior+trans].append(Transicao(anterior,trans,proximo))
             else:
                 self.transicoes[anterior+trans] = [Transicao(anterior,trans,proximo)]
 
@@ -50,8 +54,9 @@ class StateMachine(object):
 
     def run(self):
         # rodar para todas cadeias
-        resposta = [0 for i in range(self.nCadeias)] # 0 eh nao avaliado
+        resposta = [-1 for i in range(self.nCadeias)] # -1 nao foi avaliado
         for index,cadeia in enumerate(self.cadeias):
+            ''' Eu iria validar se as palavras batem com a gramatica, nao sei se isso eh necessario'''
             # validade = 0
             # for simbolo in cadeia: # considere o vazio tbm!
             #     if simbolo not in self.alfabeto:
@@ -60,15 +65,20 @@ class StateMachine(object):
             # else: # inner did not break
             #     continue
             # break # inner did break
-            resposta[index] = self.validarCadeia(cadeia)
+
+            if cadeia == '-' :
+                resposta[index] = self.validarCadeiaVazia()
+            else:
+                resposta[index] = self.validarCadeia(cadeia)
+
         return resposta
 
     def validarCadeia(self,cadeia):
         for inicial in self.qInciais:
             q = [inicial]
             passo = [0]
-            option = [0]
-            while(passo[0] < len(cadeia)): #iteracao termina antes do ultimo
+            option = [0] # dentre opcoes
+            while(passo[0] < len(cadeia)): #iteracao termina antes do ultimo elemento da cadeia
 
                 if q[0]+cadeia[passo[0]] not in self.transicoes.keys():
                     # q nao tem nenhuma transicao compativel
@@ -82,18 +92,30 @@ class StateMachine(object):
                         q.append(new.proximo)
                         passo.append(passo[0]+1)
                         option.append(option[op+1])
-                        print('push pilha')
 
                     # prossegue
                     q[0] = self.transicoes[q[0]+cadeia[passo[0]]][option[0]].proximo
                     passo[0]+=1
 
-
             if q[0] in self.aceitacao:
                 return 1
 
-        return -1
+        return 0
+    # verificar cadeia vazia e retornar validade
+    def validarCadeiaVazia(self):
+        resposta = 0
+        for inicial in self.qInciais:
+            if inicial in [str(i) for i in self.aceitacao]:
+                resposta = 1
+                break
+
+        return resposta
 
 state = StateMachine()
-print(state.run())
 # state.status()
+resposta = state.run()
+for index,r in enumerate(resposta):
+    if r == 1:
+        print('{}. aceita'.format(index+1))
+    elif r == 0:
+        print('{}. rejeita'.format(index+1))
